@@ -1,0 +1,70 @@
+---
+title       : Miles per Gallon (MPG) Estimation App
+subtitle    : The Regression Equation Behind the MPG Estimation
+author      : Ganesh Krishnamurthy
+job         : Coursera student
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Introduction
+
+When in the market to buy a car, one of the important economical considerations is the miles per gallon (MPG) of the desired vehicle. There are a variety of vehicle configuration/properties that impact the MPG. Some of these factors are:
+
+1. Automatic vs Manual Transmission
+2. Horsepower
+3. Weight
+4. # of cylinders in the engine
+5. # of carburetors
+6. Accelaration, etc.
+
+Multiple regression models were attempted on the "mtcars" datset and the best model was chosen to predict the MPG in the App.
+
+--- .class #id 
+
+## Exploring the mtcars Dataset
+
+```{r echo=TRUE}
+data(mtcars);
+head(mtcars);
+```
+The mtcars dataset containing `r nrow(mtcars)` vehicles was used to develop a regression model to estimate the MPG given the various vehicle properties.
+
+Predictors that did not intiutively fit with the vocabulary of a car-buyer were discarded. Because, requesting user inputs for such variables will just lead to confusion and bad inputs from the front end of the App. Example: Rear axle ratio (drat), number of carburetors (carb), and accelaration (qsec).
+
+--- .class #id 
+
+## Trying Multiple Prediction Models
+
+Multiple linear models were attempted.
+```{r, echo=TRUE, eval=TRUE, results="hide"}
+fit1<-lm(data=mtcars, mpg ~ am);
+fit2<-lm(data=mtcars, mpg ~ am + hp + am*hp);
+fit3<-lm(data=mtcars, mpg ~ am + wt + am*wt);
+fit4<-lm(data=mtcars, mpg ~ am + hp + wt + am*wt);
+```
+The best model was chosen and it came out to be fit4:
+```{r, echo=TRUE, eval=TRUE, results="hide"}
+anova(fit1, fit2, fit3, fit4);
+```
+The chosen model had the following cofficients for the properties of a car:
+```{r, echo=TRUE}
+fit4$coefficients;
+```
+
+--- .class #id 
+
+## Constructing the App with the Regression Equation of Best Fit
+
+This formula was encapsulated into the server.R piece of the Shiny App. The front end (ui.R) collects the automatic vs manual transmission decision, the weight and the horsepower. This is passed to the server and the prediction is returned to the front end of the MPG APP.
+
+Care is taken to show-back/confirm to the user the inputs they entered and the MPG prediction is shown. Enjoy this App at:
+https://ganesh-krishnamurthy.shinyapps.io/Project
+
+
+
+
